@@ -7,6 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+aiogram = "^2.25.1"
+sqlalchemy = "^2.0.4"
+psycopg2 = "^2.9.5"
+ipython = "^8.10.0"
 
 
 [build-system]
