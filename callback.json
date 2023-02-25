@@ -1,0 +1,68 @@
+{
+  "id": "6420748842126339248",
+  "from": {
+    "id": 1494947085,
+    "is_bot": false,
+    "first_name": "Виталий",
+    "last_name": "Коновалов",
+    "username": "Kremniland",
+    "language_code": "ru"
+  },
+  "message": {
+    "message_id": 802,
+    "from": {
+      "id": 5614614918,
+      "is_bot": true,
+      "first_name": "Kremniland_bot",
+      "username": "Kremnilandk_bot"
+    },
+    "chat": {
+      "id": 1494947085,
+      "first_name": "Виталий",
+      "last_name": "Коновалов",
+      "username": "Kremniland",
+      "type": "private"
+    },
+    "date": 1677270743,
+    "photo": [
+      {
+        "file_id": "AgACAgQAAxkDAAIDImP49KeHFfz9lwG2utHvjR0rIjHhAAKUrzEbTUG1UwVQYU5IQF-fAQADAgADcwADLgQ",
+        "file_unique_id": "AQADlK8xG01BtVN4",
+        "file_size": 1033,
+        "width": 90,
+        "height": 67
+      },
+      {
+        "file_id": "AgACAgQAAxkDAAIDImP49KeHFfz9lwG2utHvjR0rIjHhAAKUrzEbTUG1UwVQYU5IQF-fAQADAgADbQADLgQ",
+        "file_unique_id": "AQADlK8xG01BtVNy",
+        "file_size": 11041,
+        "width": 320,
+        "height": 240
+      },
+      {
+        "file_id": "AgACAgQAAxkDAAIDImP49KeHFfz9lwG2utHvjR0rIjHhAAKUrzEbTUG1UwVQYU5IQF-fAQADAgADeAADLgQ",
+        "file_unique_id": "AQADlK8xG01BtVN9",
+        "file_size": 14697,
+        "width": 427,
+        "height": 320
+      }
+    ],
+    "caption": "Нравится?",
+    "reply_markup": {
+      "inline_keyboard": [
+        [
+          {
+            "text": "👍",
+            "callback_data": "like"
+          },
+          {
+            "text": "👎",
+            "callback_data": "dislike"
+          }
+        ]
+      ]
+    }
+  },
+  "chat_instance": "5898805731187347245",
+  "data": "like"
+}

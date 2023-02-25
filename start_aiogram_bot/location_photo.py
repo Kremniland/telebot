@@ -22,7 +22,8 @@ async def help_message(message: types.Message):
 @dp.message_handler(commands='картинка')
 async def send_image(message: types.Message):
     await bot.send_photo(chat_id=message.chat.id,
-                         photo='https://avatars.mds.yandex.net/i?id=ec8eecc81cf764a8709b601d3e3716e95b2da6a2-7698965-images-thumbs&n=13')
+                         photo='https://avatars.mds.yandex.net/i?id=ec8eecc81cf764a8709b601d3e3716e95b2da6a2-7698965-images-thumbs&n=13',
+                         caption='Нравится тебе это фото?')
     await message.delete()
 
 
