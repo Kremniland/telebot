@@ -80,3 +80,4 @@ async def load_desc(message: types.Message, state: FSMContext) -> None:
 if __name__ == '__main__':
     executor.start_polling(dp,
                            skip_updates=True)
+
