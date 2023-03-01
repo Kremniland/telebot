@@ -1,53 +1,50 @@
+import hashlib
 from aiogram import Bot, Dispatcher, types, executor
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
+from aiogram.utils.callback_data import CallbackData
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
 
 from config import TOKEN
-
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot)
 
-is_voted = False
-
-ikb = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text='👍', callback_data='like'), InlineKeyboardButton(text='👎', callback_data='dislike')],
-    [InlineKeyboardButton(text='Close keyboard?', callback_data='close')]
-])
+user_data = ''
 
 
 async def on_startup(_):
     print('Started Bot')
 
 
-@dp.message_handler()
+@dp.message_handler(commands='start')
 async def start_cmd(message: types.Message) -> None:
-    await bot.send_photo(chat_id=message.chat.id,
-                         photo='https://wl-adme.cf.tsp.li/resize/728x/jpg/453/a87/8353725363894d8c91b554719d.jpg',
-                         caption='Нравится?',
-                         reply_markup=ikb)
+    await message.answer(text='Введите число: ')
 
 
-@dp.callback_query_handler(text='close')
-async def close_ikb(callback: types.CallbackQuery):
-    await callback.message.delete()
+@dp.message_handler()
+async def text_handler(message: types.Message) -> None:
+    global user_data
+    user_data = message.text
+    await message.reply('Ваши данные сохранены')
 
 
-@dp.callback_query_handler()
-async def like_ikb(callback: types.CallbackQuery):
-    global is_voted
-    if not is_voted:
-        if callback.data == 'like':
-            is_voted = True
-            await callback.answer(show_alert=False,
-                                  text='Тебе понравилось')
-        if callback.data == 'dislike':
-            is_voted = True
-            await callback.answer(show_alert=False,
-                                  text='Тебе не понравилось')
-    await callback.answer(show_alert=True,
-                          text='Ты уже глосовал')
+@dp.inline_handler()
+async def inline_echo(inline_query: types.InlineQuery) -> None:
+    text = inline_query.query or 'Echo'
+    result_id = hashlib.md5(text.encode()).hexdigest()
+    input_content = InputTextMessageContent(f'<b>{text}</b> - {user_data}',
+                                            parse_mode='html')
+
+    item = InlineQueryResultArticle(
+        id=result_id,
+        input_message_content=input_content,
+        title='Echo Bot',
+        description='Я не простой Бот'
+    )
+
+    await bot.answer_inline_query(results=[item],
+                                  inline_query_id=inline_query.id,
+                                  cache_time=1)
 
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
-
