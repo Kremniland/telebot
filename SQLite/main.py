@@ -1,8 +1,10 @@
 '''
 FSM photo age name description
+сброс состояния
 заполнение анкеты
 проверка данных возраста и фото
-и вывод данных в конце заполнения
+вывод данных в конце заполнения
+сохранение в базу данных
 '''
 import uuid
 from aiogram import Bot, executor, Dispatcher, types
@@ -13,6 +15,8 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.dispatcher import FSMContext
 
 from config import TOKEN
+from sqlite import db_start, edit_profile, create_profile
+
 
 storage = MemoryStorage()  # хранилище состояний
 bot = Bot(TOKEN)
@@ -24,6 +28,11 @@ class ProfileStatesGroup(StatesGroup):
     name = State()
     age = State()
     description = State()
+
+
+async def on_startup(_):
+    '''подключаемся  к базе данных'''
+    await db_start()
 
 
 def get_kb() -> ReplyKeyboardMarkup:
@@ -38,6 +47,7 @@ def get_cancel_kb() -> ReplyKeyboardMarkup:
 async def start_cmd(message: types.Message):
     await message.answer('Создать профиль: /create',
                          reply_markup=get_kb())
+    await create_profile(user_id=message.from_user.id) # создание профиля в базе по юзер_ид
 
 
 @dp.message_handler(commands='cancel', state='*')
@@ -104,10 +114,14 @@ async def load_desc(message: types.Message, state: FSMContext) -> None:
     await bot.send_photo(chat_id=message.from_user.id,
                          photo=data['photo'],
                          caption=f"{data['name']}, {data['age']}\n{data['description']}")
+
+    await edit_profile(state, user_id=message.from_user.id) # Заполнение ранее созданного профиля в базе
+
     await message.reply('Анкета создана')
     await state.finish()
 
 
 if __name__ == '__main__':
     executor.start_polling(dp,
-                           skip_updates=True)
+                           skip_updates=True,
+                           on_startup=on_startup)
