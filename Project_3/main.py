@@ -1,7 +1,7 @@
 from aiogram import executor
 from sys import argv
 
-from Project_3.utils import fill_category_data
+from Project_3.utils import fill_category_data, fill_films_data
 from bot_router import dp
 from init_db import create_tables
 # from database.models import create_tables
@@ -18,8 +18,10 @@ if __name__ == '__main__':
     # elif data[1] == 'runbot'
     #     executor.start_polling(dp,
     #                        skip_updates=True)
-    create_tables() # создаем таблицы
-    fill_category_data('data_files/category_data.csv') # заполнение таблицы категории из csv файла
+
+    # create_tables() # создаем таблицы
+    # fill_category_data('data_files/category_data.csv') # заполнение таблицы категории из csv файла
+    # fill_films_data('data_files/emojies.csv')
     executor.start_polling(dp,
                            skip_updates=True)
 

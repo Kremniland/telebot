@@ -11,10 +11,10 @@ class CategoryManager():
         '''добавление в базу новой категории'''
         inserts = []
 
-        for c in data: # data список категорий из csv файла
+        for category in data: # data список категорий из csv файла
             inserts.append(
                 Category(
-                    name=c[0]
+                    name=category[0]
                 )
             )
         self.session.add_all(inserts)
@@ -29,5 +29,30 @@ class CategoryManager():
         '''получение всех категорий из базы'''
         results = self.session.query(self.model).all()
         return results
+
+
+class FilmManager():
+    def __init__(self):
+        self.session = get_session()
+        self.model = Film
+
+    def insert_film(self, data):
+        '''добавляем фильмы в базу'''
+        inserts = []
+        for film in data:
+            inserts.append(
+                Film(
+                    emoji_text=film[0],
+                    name_text=film[1],
+                    category=film[2]
+                )
+            )
+        self.session.add_all(inserts)
+        self.session.commit()
+
+    def get_films(self):
+        results = self.session.query(self.model).all()
+        return results
+
 
 
