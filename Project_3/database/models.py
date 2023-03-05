@@ -1,21 +1,18 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import (
     Column, Integer, String, BigInteger, UnicodeText, Text, ForeignKey
 )
 
-from config import ASYNC_DB_URL, DB_URL
+from Project_3.db import Base, engine
 
 
-engine = create_engine(DB_URL, echo=True)
-Base = declarative_base()
-session = sessionmaker(autocommit=True, bind=engine, autoflush=True) # создание подключения к бд
+# def create_tables():
+#     '''создает все таблицы в базе'''
+#     Base.metadata.create_all(engine, checkfirst=True) # создаст все таблицы созданные на основе Base
 
 
 class User(Base):
     __tablename__ = 'user'
+    __table_args__ = {'extend_existing': True}
     id = Column(Integer,
                 primary_key=True,
                 autoincrement=True,
@@ -26,6 +23,7 @@ class User(Base):
 
 class Category(Base):
     __tablename__ = 'category'
+    __table_args__ = {'extend_existing': True}
     id = Column(Integer,
                 primary_key=True,
                 autoincrement=True,
@@ -35,6 +33,7 @@ class Category(Base):
 
 class Film(Base):
     __tablename__ = 'film'
+    __table_args__ = {'extend_existing': True}
     id = Column(Integer,
                 primary_key=True,
                 autoincrement=True,
@@ -43,4 +42,3 @@ class Film(Base):
     name_text = Column(Text, nullable=False)
     category = Column(Integer, ForeignKey('category.id'), nullable=False)
 
-Base.metadata.create_all(engine, checkfirst=True)
