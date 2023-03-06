@@ -42,3 +42,15 @@ class Film(Base):
     name_text = Column(Text, nullable=False)
     category = Column(Integer, ForeignKey('category.id'), nullable=False)
 
+
+class UserGuessedFilm(Base):
+    '''хранит фильмы которые пользователь уже угадывал'''
+    __tablename__ = 'user_guessed_film'
+    __table_args__ = {'extend_existing': True}
+    id = Column(Integer,
+                primary_key=True,
+                autoincrement=True,
+                unique=True)
+    user = Column(Integer, ForeignKey('user.id'), nullable=False) # кто угадал фильм
+    film = Column(Integer, ForeignKey('film.id'), nullable=False) # какой фильм угадан
+
