@@ -1,3 +1,8 @@
+'''
+Решить вопросы:
+редис в асинхронном режиме
+запуск с дополнительными параметрами
+'''
 from aiogram import executor
 from sys import argv
 

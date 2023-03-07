@@ -10,15 +10,15 @@ from Project_3.db import Base, engine
 #     Base.metadata.create_all(engine, checkfirst=True) # создаст все таблицы созданные на основе Base
 
 
-class User(Base):
-    __tablename__ = 'user'
-    __table_args__ = {'extend_existing': True}
-    id = Column(Integer,
-                primary_key=True,
-                autoincrement=True,
-                unique=True)
-    user_tg_id = Column(String, nullable=False, unique=True) # телеграмм ид пользователя
-    points = Column(BigInteger,default=0) # колличество очков пользователя
+# class User(Base):
+#     __tablename__ = 'user'
+#     __table_args__ = {'extend_existing': True}
+#     id = Column(Integer,
+#                 primary_key=True,
+#                 autoincrement=True,
+#                 unique=True)
+#     user_tg_id = Column(String, nullable=False, unique=True) # телеграмм ид пользователя
+#     points = Column(BigInteger,default=0) # колличество очков пользователя
 
 
 class Category(Base):
@@ -51,6 +51,6 @@ class UserGuessedFilm(Base):
                 primary_key=True,
                 autoincrement=True,
                 unique=True)
-    user = Column(Integer, ForeignKey('user.id'), nullable=False) # кто угадал фильм
+    tg_user_id = Column(String(50), nullable=False) # кто играет
     film = Column(Integer, ForeignKey('film.id'), nullable=False) # какой фильм угадан
 

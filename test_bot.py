@@ -9,12 +9,17 @@ dp = Dispatcher(bot)
 
 @dp.message_handler(commands='start')
 async def start_cmd(message: types.Message):
-    await message.answer('привет')
     user_id = message.from_user.id
-    data = {'level_choice': '77765432', 'test': 'test'}
-    redis_client.cache_user_data(user_id, data)
-    print(user_id)
-    print(redis_client.get_user_data(user_id))
+    await message.answer('привет '+str(user_id),
+                         reply_markup=types.InlineKeyboardMarkup(inline_keyboard=[
+                             [types.InlineKeyboardButton('start', callback_data='start')]
+                         ]))
+
+
+@dp.callback_query_handler()
+async def cb_start(callback: types.CallbackQuery):
+    print(callback.from_user.id)
+    await callback.message.answer('start!')
 
 
 

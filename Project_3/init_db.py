@@ -1,5 +1,5 @@
 # без этого импорта не будет работать!!!!!!!!!!!!!
-from database.models import User, Category, Film # без этого импорта не будет работать!!!!!!!!!!!!!
+from database.models import Category, Film # без этого импорта не будет работать!!!!!!!!!!!!!
 from Project_3.db import Base, engine
 
 

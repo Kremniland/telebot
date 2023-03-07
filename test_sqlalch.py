@@ -5,35 +5,6 @@ from Project_3.database.models import Category, Film, UserGuessedFilm
 from Project_3.db import get_session
 
 
-class CategoryManager():
-    def __init__(self):
-        self.model = Category
-        self.session = get_session()
-
-    def insert_category(self, data):
-        '''добавление в базу новой категории'''
-        inserts = []
-
-        for category in data: # data список категорий из csv файла
-            inserts.append(
-                Category(
-                    name=category[0]
-                )
-            )
-        self.session.add_all(inserts)
-        self.session.commit()
-        # ===== или вот так:
-        # for c in data:
-        #     category = Category(name=c[0])
-        #     self.session.add(category)
-        #     self.session.commit()
-
-    def get_all_categories(self):
-        '''получение всех категорий из базы'''
-        results = self.session.query(self.model).all()
-        return results
-
-
 class FilmManager():
     def __init__(self):
         self.session = get_session()
@@ -56,7 +27,7 @@ class FilmManager():
     def get_random_film(self, film_ids, category_id=None):
         if category_id:
             # отдаст все фильмы категории которой мы запросили кроме id из списка film_ids
-            q = self.session.query(self.model).filter(
+            q = self.session.query().filter(
                 not_(Film.id.in_(film_ids)),
                 # !!!!что бы написать равно пишем модель.поле == атрибут
                 Film.category == category_id
@@ -64,32 +35,44 @@ class FilmManager():
             return q
         else:
             # отдаст все фильмы которых нет в списке переданных film_ids
-            q = self.session.query(self.model).filter(
+            q = self.session.query().filter(
                 not_(Film.id.in_(film_ids)),
             ).order_by(func.random()).first() # вернет рандомно первый из списка
             return q
 
 
 class GuessedFilmManager():
+
     def __init__(self):
         self.session = get_session()
-        self.models = UserGuessedFilm
+        self.model = UserGuessedFilm
 
     def insert_guessed_film(self, tg_user_id, film_id):
-        '''добавление пользователя и фильм в модель UserGuessedFilm'''
         insert = UserGuessedFilm(
             tg_user_id=tg_user_id,
-            film = film_id
+            film=film_id
         )
         self.session.add(insert)
         self.session.commit()
 
-    def get_guessed_film(self, tg_user_id):
-        '''получаем все id из модели UserGuessedFilm,
-        где tg_user_id=tg_user_id'''
-        results = self.session.query(UserGuessedFilm.id).filter(
-            # !!!что бы написать равно пишем модель.поле == атрибут
-            UserGuessedFilm.tg_user_id==str(tg_user_id)
+    def get_guessed_films_ids(self, tg_user_id):
+        ids = self.session.query(UserGuessedFilm.film).filter(
+            UserGuessedFilm.tg_user_id == tg_user_id
         )
-        return results
+        return ids
+
+
+ses = get_session()
+films=ses.query(UserGuessedFilm.film).filter(UserGuessedFilm.tg_user_id=='1494947085')
+
+for s in films:
+    print(s)
+
+# category_id = None
+# films = FilmManager().session.query(Film).filter(
+#                 not_(Film.id.in_(film_ids)),
+#
+#             ).order_by(func.random()).first()
+# print(films.name_text)
+
 
