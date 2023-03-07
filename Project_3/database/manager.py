@@ -85,8 +85,8 @@ class GuessedFilmManager():
         self.session.commit()
 
     def get_guessed_film(self, tg_user_id):
-        '''получаем все id из модели UserGuessedFilm,
-        где tg_user_id=tg_user_id'''
+        '''получаем все id из модели UserGuessedFilm, где tg_user_id=tg_user_id,
+        т е список фильмов которые пользователь уже угадал'''
         results = self.session.query(UserGuessedFilm.id).filter(
             # !!!что бы написать равно пишем модель.поле == атрибут
             UserGuessedFilm.tg_user_id==str(tg_user_id)

@@ -38,7 +38,7 @@ class Film(Base):
                 primary_key=True,
                 autoincrement=True,
                 unique=True)
-    emoji_text = Column(UnicodeText, nullable=False)
+    emoji_text = Column(UnicodeText, nullable=False) # смайлики хранятся в UnicodeText
     name_text = Column(Text, nullable=False)
     category = Column(Integer, ForeignKey('category.id'), nullable=False)
 
@@ -52,5 +52,5 @@ class UserGuessedFilm(Base):
                 autoincrement=True,
                 unique=True)
     tg_user_id = Column(String(50), nullable=False) # кто играет
-    film = Column(Integer, ForeignKey('film.id'), nullable=False) # какой фильм угадан
+    film = Column(Integer, ForeignKey('film.id'), nullable=False) # какой фильм уже был
 
