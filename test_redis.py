@@ -69,6 +69,8 @@ class RedisClient:
 # создаем объект класса для импорта
 redis_client = RedisClient()
 
-
-
-
+data_film = {'id': 1, 'text': 'qwe'}
+user_tg_id = 123
+redis_client.cache_user_film(user_tg_id, data_film)
+film = redis_client.get_user_film(user_tg_id)
+print(film)

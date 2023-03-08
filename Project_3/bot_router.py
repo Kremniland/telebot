@@ -15,7 +15,8 @@ dp = Dispatcher(bot, storage=storage)
 dp.register_message_handler(handlers.welcome_message, commands=['start'])
 dp.register_message_handler(handlers.start_game, commands=['start_game'])
 dp.register_message_handler(handlers.finish_game, commands=['finish_game'])
-dp.register_message_handler(handlers.send_questions, content_types=['text'], state=UserMessageState.answer_text)
+# dp.register_message_handler(handlers.send_questions, content_types=['text'], state=UserMessageState.answer_text)
+dp.register_message_handler(handlers.send_questions)
 
 # Callback buttons handlers
 

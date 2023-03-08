@@ -8,6 +8,13 @@ from Project_3.redis_client import redis_client
 from Project_3.bot_utils.state import UserMessageState
 
 
+def get_random_film(user_tg_id, category):
+    '''возвращает рандомный фильм из базы, кроме уже угаданных пользователем'''
+    guessed_film = GuessedFilmManager().get_guessed_film(user_tg_id)  # список уже угаданных фильмов
+    # достаем фильм из выбранной категории который еще пользователь не угадывал
+    film = FilmManager().get_random_film(film_ids=guessed_film, category_id=category)
+    return film
+
 async def welcome_message(message: types.Message):
     text = '''
         Бот для игры. 
@@ -46,21 +53,50 @@ async def start_with_category(callback: types.CallbackQuery):
         user_tg_id = callback.from_user.id
         redis_client.cache_user_data(user_tg_id, data) # сохраняем в редис
 
-        guessed_film = GuessedFilmManager().get_guessed_film(user_tg_id)  # список уже угаданных фильмов
-        # достаем фильм из выбранной категории который еще пользователь не угадывал
-        film = FilmManager().get_random_film(film_ids=guessed_film, category_id=choice)
+        film = get_random_film(user_tg_id, choice)
+        # guessed_film = GuessedFilmManager().get_guessed_film(user_tg_id)  # список уже угаданных фильмов
+        # # достаем фильм из выбранной категории который еще пользователь не угадывал
+        # film = FilmManager().get_random_film(film_ids=guessed_film, category_id=choice)
+
+        # сохраняем в редис данные о угадываемом фильме
+        redis_client.cache_user_film(user_tg_id=user_tg_id, data={'id': film.id, 'text': film.name_text})
+
         await callback.message.answer('Вы выбрали категорию. Игра началась...')
         await callback.message.answer(f'{film.emoji_text}')
-        await UserMessageState.answer_text.set()  # означает что следующее сообщение будет сохранено в state
+        # await UserMessageState.answer_text.set()  # означает что следующее сообщение будет сохранено в state
 
 
-async def send_questions(message: types.Message, state: FSMContext):
-    '''обрабатываем ответ на вопрос о фильме, если он текст, сохраняем ответ в хранилище'''
-    async with state.proxy() as data: # сохраняем в хранилище ответ пользователя
-        data['answer_text'] = message.text
-    print('Ответ:', data['answer_text'])
+async def send_questions(message: types.Message):
     user_tg_id = message.from_user.id
-    await state.finish()
+    user_data = redis_client.get_user_data(user_tg_id) # проверяем есть ли у пользователя игра
+    if user_data:
+        answer = message.text # берем текст ответа пользователя из сообщения
+        user_film = redis_client.get_user_film(user_tg_id) # достаем фильм который у юзера сейчас в игре
+        data = user_film[b'text']
+        print(data.decode('utf-8'))
+        if answer == data.decode('utf-8'): # если фильм угадан
+            await message.answer(f"Ура вы угадали! {data.decode('utf-8')}")
+            redis_client.delete_user_film(user_tg_id) # удаляем данные об угаданном фильме из редис
+            GuessedFilmManager().insert_guessed_film(user_tg_id, user_film[b'id'].decode('utf-8')) # добавляем угаданный фильм в базу угаданных фильмов
+            film = get_random_film(user_tg_id, category=user_data[b'level_choice'].decode('utf-8')) # получаем следующщий рандомный фильм
+            redis_client.cache_user_film(user_tg_id, {'id': film.id, 'text': film.name_text}) # сохраняем следующий фильм в редис
+            await message.answer('Следующий вопрос:')
+            await message.answer(f'{film.emoji_text}')
+        else:
+            await message.answer('Не угадали! еще раз попробуйте')
+    else:
+        text = 'У вас нет активной игры запустите начало игры'
+        await message.answer(text=text)
+
+
+
+# Убрал FSM сделал через редис
+# async def send_questions(message: types.Message, state: FSMContext):
+#     '''обрабатываем ответ на вопрос о фильме, если он текст, сохраняем ответ в хранилище()'''
+#     async with state.proxy() as data: # сохраняем в хранилище ответ пользователя
+#         data['answer_text'] = message.text
+#     print('Ответ:', data['answer_text'])
+#     await state.finish()
 
 
 async def finish_game(message: types.Message):
