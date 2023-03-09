@@ -1,6 +1,6 @@
 # telebot
-- aiogram
+Учебная папка с 3 небольшими проектами 
+aiogram
 - Redis
 - SQLAlchemy
 - postgresql
-Учебная папка с 3 небольшими проектами
